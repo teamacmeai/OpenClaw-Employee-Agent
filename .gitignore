@@ -1,0 +1,17 @@
+# Python environments and caches
+.venv/
+__pycache__/
+.pytest_cache/
+
+# Node / Next.js
+node_modules/
+.next/
+
+# Secrets and local config
+.env
+
+# Logs
+*.log
+
+# Graphify output
+graphify-out/

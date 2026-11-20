@@ -1,0 +1,248 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:openclaw:contracts:eval-request:1.0",
+  "title": "OpenClaw Evaluation Request",
+  "description": "Input FastAPI sends to the OpenClaw agent: one aggregated, already-redacted activity window for one employee. Contains no file contents and no window titles.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "request_id",
+    "employee_id",
+    "role_id",
+    "session_id",
+    "timezone",
+    "window",
+    "activity",
+    "recent_context"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "1.0"
+    },
+    "request_id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 64,
+      "pattern": "^[A-Za-z0-9_-]+$",
+      "description": "Unique ID for this call. The response must echo it."
+    },
+    "employee_id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 64,
+      "pattern": "^[A-Za-z0-9_-]+$"
+    },
+    "role_id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 64,
+      "pattern": "^[a-z0-9_]+$",
+      "description": "Role the employee holds, e.g. backend_developer."
+    },
+    "session_id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 64,
+      "pattern": "^[A-Za-z0-9_-]+$"
+    },
+    "timezone": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 64,
+      "description": "IANA time zone name, e.g. Asia/Dhaka."
+    },
+    "window": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "start",
+        "end"
+      ],
+      "properties": {
+        "start": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "end": {
+          "$ref": "#/$defs/timestamp"
+        }
+      },
+      "description": "Time range covered by this request. end must be after start."
+    },
+    "activity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "active_seconds",
+        "idle_seconds",
+        "file_events",
+        "app_focus"
+      ],
+      "properties": {
+        "active_seconds": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "idle_seconds": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "file_events": {
+          "type": "array",
+          "maxItems": 200,
+          "items": {
+            "$ref": "#/$defs/file_event"
+          }
+        },
+        "app_focus": {
+          "type": "array",
+          "maxItems": 50,
+          "items": {
+            "$ref": "#/$defs/app_focus"
+          }
+        }
+      }
+    },
+    "recent_context": {
+      "type": "array",
+      "maxItems": 5,
+      "items": {
+        "$ref": "#/$defs/context_block"
+      },
+      "description": "Up to 5 most recent earlier work blocks for continuity. May be empty."
+    }
+  },
+  "$defs": {
+    "timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "description": "RFC 3339 timestamp that includes a UTC offset, e.g. 2026-11-20T09:00:00+06:00."
+    },
+    "file_event": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "path",
+        "extension",
+        "event_type",
+        "edit_count",
+        "lines_added",
+        "lines_removed",
+        "project",
+        "last_event_at"
+      ],
+      "properties": {
+        "path": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 300,
+          "description": "Path relative to the project root. Never an absolute path."
+        },
+        "extension": {
+          "type": "string",
+          "pattern": "^(\\.[A-Za-z0-9_+-]{1,15})?$"
+        },
+        "event_type": {
+          "enum": [
+            "CREATE",
+            "MODIFY",
+            "RENAME",
+            "DELETE"
+          ]
+        },
+        "edit_count": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "lines_added": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "lines_removed": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "project": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "maxLength": 64
+        },
+        "last_event_at": {
+          "$ref": "#/$defs/timestamp"
+        }
+      }
+    },
+    "app_focus": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "app_name",
+        "context_tag",
+        "start",
+        "duration_seconds"
+      ],
+      "properties": {
+        "app_name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 64
+        },
+        "context_tag": {
+          "enum": [
+            "IDE",
+            "CLI",
+            "BROWSER_WORK",
+            "DESIGN",
+            "DOCS",
+            "COMMS",
+            "OTHER"
+          ]
+        },
+        "start": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "duration_seconds": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "context_block": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "start",
+        "end",
+        "category",
+        "summary"
+      ],
+      "properties": {
+        "start": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "end": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "category": {
+          "enum": [
+            "FEATURE_DEVELOPMENT",
+            "DEBUGGING",
+            "CODE_REVIEW",
+            "DOCUMENTATION",
+            "DESIGN",
+            "MEETINGS_COMMUNICATION",
+            "RESEARCH",
+            "OTHER"
+          ]
+        },
+        "summary": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 160
+        }
+      }
+    }
+  }
+}

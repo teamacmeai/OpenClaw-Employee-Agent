@@ -1,0 +1,9 @@
+# Keep Graphify focused on real source code and docs
+.venv/
+node_modules/
+.next/
+__pycache__/
+.pytest_cache/
+.git/
+graphify-out/
+*.log
