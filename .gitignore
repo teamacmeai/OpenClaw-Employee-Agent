@@ -15,3 +15,5 @@ node_modules/
 
 # Graphify output
 graphify-out/
+IMPLEMENTATION_PLAN.md
+prompts.md
