@@ -16,6 +16,7 @@ class Settings(BaseSettings):
     app_env: str = "development"
     log_level: str = "INFO"
     request_max_bytes: int = 1_048_576
+    rate_limit_per_minute: int = 60
     database_url: str = "postgresql://postgres:postgres@localhost:5432/openclaw"
     db_pool_min_size: int = 1
     db_pool_max_size: int = 5

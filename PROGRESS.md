@@ -4,37 +4,34 @@ Alembic Head: 0001_identity
 Locked Contracts: eval_request v1.0, eval_response v1.0
 
 ## Current phase
-PH-02: Alembic setup and identity schema (Completed, pending user verification)
+PH-03: Device authentication and provisioning (Completed, pending user verification)
+
+## PH-03 Summary
+- **Status:** Completed
+- **What was built:** Device token generation and SHA-256 verification (`ocl_<prefix>_<secret>`), `AuthService` validating active/unexpired workstation tokens with throttled `last_used_at` updates, `require_device` FastAPI dependency with identical 401s, per-workstation token bucket rate limiter with 429 response & `Retry-After`, admin CLI commands (`register-employee`, `register-workstation`, `issue-token`, `revoke-token`, `list-tokens`), `GET /v1/device/whoami` endpoint, and tests for auth, rate limiting, CLI, and endpoint.
+- **Key files:**
+  - `backend/app/core/security.py`: Token generation, SHA-256 hashing, constant-time verification
+  - `backend/app/core/rate_limit.py`: In-memory thread-safe token bucket rate limiter
+  - `backend/app/services/auth_service.py`: `AuthService` resolving `DeviceIdentity`
+  - `backend/app/api/deps.py`: `require_device` dependency and rate limit enforcement
+  - `backend/app/api/routes/device.py` & `backend/app/api/router.py`: `GET /v1/device/whoami`
+  - `backend/app/cli.py`: Admin CLI for employee/workstation registration & token management
+  - `backend/tests/`: `test_auth.py`, `test_device_api.py`, `test_cli.py`
+- **Interfaces / Routes:** `GET /v1/device/whoami`, `Authorization: Bearer <token>` header, `RATE_LIMIT_PER_MINUTE` setting
+- **New environment variables:** `RATE_LIMIT_PER_MINUTE` (default 60)
+- **Verification commands:** `pytest` (from `backend/`), `python -m app.cli --help`, `curl -H "Authorization: Bearer <token>" http://localhost:8000/v1/device/whoami`
+- **Assumptions and open questions:** None; DB tests run against migrated database when `TEST_DATABASE_URL` is set, non-db tests run standalone.
+- **Notes for next phase:** Ready for PH-04 (Canonical events and source adapters).
 
 ## PH-02 Summary
 - **Status:** Completed
-- **What was built:** Alembic setup (`alembic.ini`, `migrations/env.py`, `migrations/script.py.mako`), forward migration `0001_identity` (`employees`, `workstations`, `api_tokens` tables and indexes), psycopg `dict_row` repositories (`EmployeeRepository`, `WorkstationRepository`, `TokenRepository`), migration test runner & table cleanup fixtures in `conftest.py`, repository test suite (`test_repositories.py`), and `docs/MIGRATIONS.md`.
-- **Key files:**
-  - `backend/alembic.ini` & `backend/migrations/env.py`: Alembic runner reading database URL
-  - `backend/migrations/versions/0001_identity.py`: DDL for identity schema tables and indexes
-  - `backend/app/repositories/`: `employee_repo.py`, `workstation_repo.py`, `token_repo.py`
-  - `backend/tests/`: `conftest.py` (session migration runner & truncate cleanup), `test_repositories.py`
-  - `docs/MIGRATIONS.md`: Migration upgrade/downgrade and revision guide
-- **Interfaces / Tables:** Tables `employees`, `workstations`, `api_tokens`
-- **New environment variables:** None (`DATABASE_URL` and `TEST_DATABASE_URL` reused)
-- **Verification commands:** `alembic upgrade head`, `alembic downgrade -1`, `pytest tests/test_repositories.py` (from `backend/`)
-- **Assumptions and open questions:** None; DB tests skip gracefully when `TEST_DATABASE_URL` is unset and run against migrated DB when set.
-- **Notes for next phase:** Ready for PH-03 (Device authentication, token hashing, rate limiting, and admin CLI).
+- **What was built:** Alembic setup (`0001_identity`), psycopg `dict_row` repositories (`EmployeeRepository`, `WorkstationRepository`, `TokenRepository`), and repository test suite.
+- **Key files:** `migrations/versions/0001_identity.py`, `backend/app/repositories/`, `docs/MIGRATIONS.md`.
 
 ## PH-01 Summary
 - **Status:** Completed
-- **What was built:** Package layout, request-ID propagation/generation middleware, privacy-safe audit logging, unified error format (`{"error": {"code", "message", "request_id"}}`), `/health` and `/health/db` endpoints, settings extension, and pytest setup with client and `db` marker.
-- **Key files:**
-  - `backend/app/api/router.py` & `backend/app/api/routes/health.py`: Router aggregation and health checks
-  - `backend/app/core/`: `context.py`, `logging.py`, `middleware.py`, `errors.py`
-  - `backend/app/config.py`: Added `app_env`, `log_level`, `request_max_bytes`
-  - `backend/tests/conftest.py` & `pyproject.toml`: `client`, `db_conn` fixtures and `db` marker registration
-  - `backend/tests/test_health.py` & `backend/tests/test_core.py`: Route, error handling, and middleware test suites
-- **Interfaces / Routes:** `GET /health`, `GET /health/db`, `X-Request-ID` request/response header, standard error payload
-- **New environment variables:** `APP_ENV`, `LOG_LEVEL`, `REQUEST_MAX_BYTES`, `TEST_DATABASE_URL` (optional, for db tests)
-- **Verification commands:** `pytest` (from `backend/`), `curl -i http://localhost:8000/health`, `curl -i http://localhost:8000/health/db`
-- **Assumptions and open questions:** None; DB tests gracefully skip if `TEST_DATABASE_URL` is unset.
-- **Notes for next phase:** Ready for PH-02 (Alembic initialization, identity tables migration, and psycopg repositories).
+- **What was built:** Layout, request-ID middleware, privacy logging, standard error responses, `/health`, `/health/db`.
+- **Key files:** `backend/app/core/`, `backend/app/api/routes/health.py`, `backend/app/config.py`.
 
 ## Done
 - Repo guardrails: .gitignore, .graphifyignore, AGENTS.md
@@ -43,9 +40,10 @@ PH-02: Alembic setup and identity schema (Completed, pending user verification)
 - Evaluation contract v1.0: contracts/, Pydantic models, fixtures/sample_payloads.json, contract tests
 - PH-01: Package layout, core logging/middleware/errors, /health/db, and test harness
 - PH-02: Alembic setup, 0001_identity migration, psycopg repositories, and tests
+- PH-03: Device authentication, rate limiting, admin CLI, and whoami endpoint
 
 ## Next
-- PH-03: Device authentication and provisioning
+- PH-04: Canonical events and source adapters
 
 ## Decisions
 - (record decisions D1-D6 here)

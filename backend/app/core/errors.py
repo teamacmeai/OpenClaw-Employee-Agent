@@ -52,6 +52,8 @@ def register_exception_handlers(app: FastAPI) -> None:
             code = "unauthorized"
         elif exc.status_code == 403:
             code = "forbidden"
+        elif exc.status_code == 429:
+            code = "rate_limit_exceeded"
         elif exc.status_code == 413:
             code = "payload_too_large"
         elif exc.status_code == 503:
@@ -61,6 +63,7 @@ def register_exception_handlers(app: FastAPI) -> None:
         return JSONResponse(
             status_code=exc.status_code,
             content=error_payload(code, detail_msg, req_id),
+            headers=exc.headers,
         )
 
     @app.exception_handler(RequestValidationError)
