@@ -49,10 +49,10 @@ def db_conn(apply_migrations: None) -> Iterator[psycopg.Connection]:
         pytest.skip("Requires TEST_DATABASE_URL environment variable")
 
     with psycopg.connect(test_db_url, autocommit=True) as conn:
-        # Clean identity tables before test execution
+        # Clean identity and activity tables before test execution
         with conn.cursor() as cur:
-            cur.execute("TRUNCATE TABLE api_tokens, workstations, employees CASCADE;")
+            cur.execute("TRUNCATE TABLE activity_events, ingest_batches, api_tokens, workstations, employees CASCADE;")
         yield conn
-        # Clean identity tables after test execution
+        # Clean identity and activity tables after test execution
         with conn.cursor() as cur:
-            cur.execute("TRUNCATE TABLE api_tokens, workstations, employees CASCADE;")
+            cur.execute("TRUNCATE TABLE activity_events, ingest_batches, api_tokens, workstations, employees CASCADE;")
