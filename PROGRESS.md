@@ -4,7 +4,23 @@ Alembic Head: 0001_identity
 Locked Contracts: eval_request v1.0, eval_response v1.0
 
 ## Current phase
-PH-03: Device authentication and provisioning (Completed, pending user verification)
+PH-04: Canonical events and source adapters (Completed, pending user verification)
+
+## PH-04 Summary
+- **Status:** Completed
+- **What was built:** Canonical event schemas (`CanonicalEvent`, `RawEvent`, `IngestBatch`), `SourceAdapter` protocol, `AdapterRegistry`, `GenericAdapter` supporting all required event kinds (`file_change`, `commit`, `command_run`, `browser_activity`, `idle_block`, `session_start`, `session_end`), example adapters (`FileActivityAdapter`, `AppFocusAdapter`), prefix/regex `ContainerResolver` driven by `config/container_rules.json`, redaction utilities for sensitive subjects and secret attribute scrubbing, 3-source fixture batches in `fixtures/ingest_batches.json`, and comprehensive test suite `tests/test_adapters.py`.
+- **Key files:**
+  - `backend/app/schemas/events.py`: Canonical and raw event models
+  - `backend/app/adapters/`: `base.py`, `generic.py`, `file_activity.py`, `app_focus.py`, `__init__.py`
+  - `backend/app/core/`: `containers.py`, `redaction.py`
+  - `config/container_rules.json`: Ordered prefix/regex container mapping rules
+  - `fixtures/ingest_batches.json`: 3 fixture batches across 3 tool categories
+  - `backend/tests/test_adapters.py`: Normalization, redaction, container, registry, and fixture tests
+- **Interfaces / Routes / Tables:** `CanonicalEvent`, `IngestBatch`, `SourceAdapter`, `AdapterRegistry` (no database or API routes in this phase)
+- **New environment variables:** None
+- **Verification commands:** `pytest tests/test_adapters.py` (from `backend/`)
+- **Assumptions and open questions:** None; events cleanly normalize across all specified kinds with allow-listed attributes.
+- **Notes for next phase:** Ready for PH-05 (Ingest API and event storage).
 
 ## PH-03 Summary
 - **Status:** Completed
@@ -41,9 +57,10 @@ PH-03: Device authentication and provisioning (Completed, pending user verificat
 - PH-01: Package layout, core logging/middleware/errors, /health/db, and test harness
 - PH-02: Alembic setup, 0001_identity migration, psycopg repositories, and tests
 - PH-03: Device authentication, rate limiting, admin CLI, and whoami endpoint
+- PH-04: Canonical events, source adapter protocol and registry, generic & example adapters, redaction, container resolution, and 3-source fixture batches
 
 ## Next
-- PH-04: Canonical events and source adapters
+- PH-05: Ingest API and event storage
 
 ## Decisions
 - (record decisions D1-D6 here)

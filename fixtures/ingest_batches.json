@@ -1,0 +1,190 @@
+[
+  {
+    "schema_version": "1.0",
+    "batch_id": "batch-ide-file-001",
+    "sent_at": "2026-11-26T10:00:00Z",
+    "events": [
+      {
+        "source_type": "file_activity",
+        "source_name": "code-editor",
+        "payload": {
+          "file_path": "/repo/backend/app/api/router.py",
+          "event_kind": "file_change",
+          "occurred_at": "2026-11-26T09:50:00Z",
+          "duration_seconds": 12.5,
+          "lines_added": 15,
+          "lines_removed": 3,
+          "lines_changed": 18,
+          "change_type": "modify",
+          "language_id": "python"
+        }
+      },
+      {
+        "source_type": "file_activity",
+        "source_name": "code-editor",
+        "payload": {
+          "file_path": "/repo/frontend/src/App.tsx",
+          "event_kind": "file_change",
+          "occurred_at": "2026-11-26T09:55:00Z",
+          "duration_seconds": 45.0,
+          "lines_added": 40,
+          "lines_removed": 10,
+          "change_type": "modify",
+          "language_id": "typescript"
+        }
+      },
+      {
+        "source_type": "file_activity",
+        "source_name": "code-editor",
+        "payload": {
+          "file_path": "/repo/backend/.env",
+          "event_kind": "file_change",
+          "occurred_at": "2026-11-26T09:56:00Z",
+          "duration_seconds": 5.0,
+          "lines_added": 1,
+          "lines_removed": 0
+        }
+      }
+    ]
+  },
+  {
+    "schema_version": "1.0",
+    "batch_id": "batch-generic-tool-002",
+    "sent_at": "2026-11-26T10:05:00Z",
+    "events": [
+      {
+        "source_type": "generic",
+        "source_name": "vector-design-tool",
+        "payload": {
+          "event_id": "a0000000-0000-0000-0000-000000000001",
+          "event_kind": "file_change",
+          "occurred_at": "2026-11-26T10:01:00Z",
+          "duration_seconds": 30.0,
+          "subject": "design://project-phoenix/screen1.canvas",
+          "metrics": {
+            "lines_added": 5.0,
+            "lines_removed": 2.0
+          },
+          "attributes": {
+            "action": "canvas_update"
+          }
+        }
+      },
+      {
+        "source_type": "generic",
+        "source_name": "git-vcs",
+        "payload": {
+          "event_id": "a0000000-0000-0000-0000-000000000002",
+          "event_kind": "commit",
+          "occurred_at": "2026-11-26T10:02:00Z",
+          "duration_seconds": 1.0,
+          "subject": "commit/7f8a123",
+          "metrics": {
+            "files_count": 3.0
+          },
+          "attributes": {
+            "hash": "7f8a123bc89a",
+            "branch": "feature/auth-service",
+            "message": "Implement token validation endpoint"
+          }
+        }
+      },
+      {
+        "source_type": "generic",
+        "source_name": "developer-cli",
+        "payload": {
+          "event_id": "a0000000-0000-0000-0000-000000000003",
+          "event_kind": "command_run",
+          "occurred_at": "2026-11-26T10:03:00Z",
+          "duration_seconds": 4.2,
+          "subject": "pytest backend/tests",
+          "metrics": {
+            "exit_code": 0.0
+          },
+          "attributes": {
+            "command": "pytest backend/tests",
+            "status": "success",
+            "message": "running tests with token bearer sk-12345678901234567890123456"
+          }
+        }
+      },
+      {
+        "source_type": "generic",
+        "source_name": "workstation-idle-daemon",
+        "payload": {
+          "event_id": "a0000000-0000-0000-0000-000000000004",
+          "event_kind": "idle_block",
+          "occurred_at": "2026-11-26T10:04:00Z",
+          "duration_seconds": 300.0,
+          "metrics": {
+            "duration": 300.0
+          },
+          "attributes": {
+            "reason": "lockscreen_timeout"
+          }
+        }
+      },
+      {
+        "source_type": "generic",
+        "source_name": "collector-agent",
+        "payload": {
+          "event_id": "a0000000-0000-0000-0000-000000000005",
+          "event_kind": "session_start",
+          "occurred_at": "2026-11-26T09:00:00Z",
+          "duration_seconds": 0.0,
+          "attributes": {
+            "session_id": "sess-xyz-987",
+            "action": "login"
+          }
+        }
+      },
+      {
+        "source_type": "generic",
+        "source_name": "collector-agent",
+        "payload": {
+          "event_id": "a0000000-0000-0000-0000-000000000006",
+          "event_kind": "session_end",
+          "occurred_at": "2026-11-26T10:04:30Z",
+          "duration_seconds": 0.0,
+          "attributes": {
+            "session_id": "sess-xyz-987",
+            "action": "logout"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "schema_version": "1.0",
+    "batch_id": "batch-focus-browser-003",
+    "sent_at": "2026-11-26T10:15:00Z",
+    "events": [
+      {
+        "source_type": "app_focus",
+        "source_name": "desktop-window-tracker",
+        "payload": {
+          "event_kind": "browser_activity",
+          "occurred_at": "2026-11-26T10:10:00Z",
+          "duration_seconds": 120.0,
+          "app_name": "web-browser",
+          "context_tag": "github.com/my-org/pull/42",
+          "domain": "github.com",
+          "tab_count": 8,
+          "focus_percent": 95.0
+        }
+      },
+      {
+        "source_type": "app_focus",
+        "source_name": "desktop-window-tracker",
+        "payload": {
+          "event_kind": "app_focus",
+          "occurred_at": "2026-11-26T10:12:30Z",
+          "duration_seconds": 60.0,
+          "app_name": "terminal-app",
+          "context_tag": "backend-tests",
+          "focus_percent": 100.0
+        }
+      }
+    ]
+  }
+]

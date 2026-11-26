@@ -1,0 +1,34 @@
+{
+  "rules": [
+    {
+      "source_type": "file_activity",
+      "prefix": "/repo/frontend/",
+      "container": "frontend-workspace"
+    },
+    {
+      "source_type": "file_activity",
+      "prefix": "/repo/backend/",
+      "container": "backend-workspace"
+    },
+    {
+      "source_type": "file_activity",
+      "regex": "\\.service$",
+      "container": "systemd-configs"
+    },
+    {
+      "source_type": "generic",
+      "prefix": "design://project-phoenix/",
+      "container": "phoenix-design-system"
+    },
+    {
+      "source_type": "app_focus",
+      "prefix": "github.com/my-org/",
+      "container": "code-review-browser"
+    },
+    {
+      "source_type": "*",
+      "regex": "auth-service",
+      "container": "auth-subsystem"
+    }
+  ]
+}
